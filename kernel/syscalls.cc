@@ -22,7 +22,7 @@
 #include "world/Access.h"
 #include "machine/Processor.h"
 #include "machine/Machine.h"
-#include <limits>
+
 
 #include "syscalls.h"
 #include "pthread.h"
@@ -119,69 +119,16 @@ extern "C" off_t lseek(int fildes, off_t offset, int whence) {
 
 extern "C" int sched_setaffinity(pid_t pid, size_t cpusetsize, cpu_set_t *mask)
 {
-  cpu_set_t processors = Machine::getProcessorCount();
+  //cpu_set_t processors = Machine::getProcessorCount();
   
   if (pid != 0){
     return -1;
   }
-  if (*mask > processors){
-    return -1;
-  }
+  // if (*mask > processors){
+  // return -1;
+  // }
  
-
-  int min = 0;
-  int lowest = 1;
-  
-  //cpu_set_t lower = (mask & 0xF);
-  cpu_set_t currentThread  = LocalProcessor::getCurrThread()->getAffinityMask();
-
-  cpu_set_t oneSet = ((1 << 0) & currentThread );
-  cpu_set_t twoSet = ((1 << 1) & currentThread );
-  cpu_set_t threeSet = ((1 << 2) & currentThread );
-  cpu_set_t fourSet = ((1 << 3) & currentThread );
-
-  if (oneSet ==1){
-    int oneThreads = Machine:getScheduler(0)->readyCount;
-    min = oneThreads;
-    lowest = 1;
-  }
-
-  
-  if (twoSet ==1){
-    int twoThreads = Machine:getScheduler(1)->readyCount;
-    if (twoThreads <= min){
-      min = twoThreads;
-      lowest = 2;
-    }
-  }
-
-  
-
-
-  
-  if (threeSet ==1){
-    int threeThreads = Machine:getScheduler(2)->readyCount;
-    if (threeThreads <= min){
-      min = threeThreads;
-      lowest = 4;
-    }
-  }
-  
-
-  
-  if (fourSet ==1){
-    int fourThreads = Machine:getScheduler(3)->readyCount;
-    if (fourThreads <= min){
-      min = fourThreads;
-      lowest = 8;
-    }
-  }
- 
-
-  LocalProcessor::getCurrThread()->setAffinityMask(lowest);
-  
-  
-  
+  // cpu_set_t currentThread  = LocalProcessor::getCurrThread()->getAffinityMask();
   
  return 1;
 }
