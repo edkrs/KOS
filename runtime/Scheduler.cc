@@ -134,13 +134,17 @@ void Scheduler::preempt() {               // IRQs disabled, lock count inflated
       * specified target's ready queue
       */
 
-
+    int oneSet = 1;
+    int twoSet=1;
+    int threeSet=0;
+    int fourSet=0;
+    
     Scheduler *lowest;
     int min = -1;
-    cpu_set_t oneSet = ((1 << 0) & affinityMask );
-    cpu_set_t twoSet = ((1 << 1) & affinityMask );
-    cpu_set_t threeSet = ((1 << 2) & affinityMask );
-    cpu_set_t fourSet = ((1 << 3) & affinityMask );
+    // int oneSet = ((1 << 0) & (int) affinityMask );
+    //int twoSet = ((1 << 1) & (int) affinityMask );
+    // int threeSet = ((1 << 2) & (int) affinityMask );
+    // int fourSet = ((1 << 3) &  (int) affinityMask );
 
     if (oneSet ==1){
       Scheduler *schedOne= Machine::getScheduler(0);
@@ -162,17 +166,14 @@ void Scheduler::preempt() {               // IRQs disabled, lock count inflated
     }
 
   
-
-
-  
-  if (threeSet ==1){
-    Scheduler *schedThree = Machine::getScheduler(2);
-    int threeThreads = schedThree->readyCount;
-    if (threeThreads <= min){
-      min = threeThreads;
-      lowest = schedThree;
-    }
-    if (min == -1) {min = threeThreads; lowest = schedThree;}
+   if (threeSet ==1){
+     Scheduler *schedThree = Machine::getScheduler(2);
+     int threeThreads = schedThree->readyCount;
+     if (threeThreads <= min){
+       min = threeThreads;
+       lowest = schedThree;
+     }
+     if (min == -1) {min = threeThreads; lowest = schedThree;}
   }
   
 
@@ -180,7 +181,7 @@ void Scheduler::preempt() {               // IRQs disabled, lock count inflated
   if (fourSet ==1){
     Scheduler *schedFour= Machine::getScheduler(3);
     int fourThreads = schedFour->readyCount;
-    if (fourThreads <= min){
+    if (fourThreads < min){
       min = fourThreads;
       lowest = schedFour;
     }
