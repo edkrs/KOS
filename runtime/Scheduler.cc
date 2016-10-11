@@ -134,6 +134,62 @@ void Scheduler::preempt() {               // IRQs disabled, lock count inflated
       * specified target's ready queue
       */
 
+
+    Scheduler *lowest;
+    int min = -1;
+    cpu_set_t oneSet = ((1 << 0) & affinityMask );
+    cpu_set_t twoSet = ((1 << 1) & affinityMask );
+    cpu_set_t threeSet = ((1 << 2) & affinityMask );
+    cpu_set_t fourSet = ((1 << 3) & affinityMask );
+
+    if (oneSet ==1){
+      Scheduler *schedOne= Machine::getScheduler(0);
+      int oneThreads = schedOne->readyCount;
+      min = oneThreads;
+      lowest = schedOne;
+      if (min == -1) {min = oneThreads; lowest = schedOne;}
+    }
+
+  
+    if (twoSet ==1){
+      Scheduler *schedTwo= Machine::getScheduler(1);
+      int twoThreads = schedTwo->readyCount;
+      if (twoThreads <= min){
+	min = twoThreads;
+	lowest = schedTwo;
+      }
+      if (min == -1) {min = twoThreads; lowest = schedTwo;}
+    }
+
+  
+
+
+  
+  if (threeSet ==1){
+    Scheduler *schedThree = Machine::getScheduler(2);
+    int threeThreads = schedThree->readyCount;
+    if (threeThreads <= min){
+      min = threeThreads;
+      lowest = schedThree;
+    }
+    if (min == -1) {min = threeThreads; lowest = schedThree;}
+  }
+  
+
+  
+  if (fourSet ==1){
+    Scheduler *schedFour= Machine::getScheduler(3);
+    int fourThreads = schedFour->readyCount;
+    if (fourThreads <= min){
+      min = fourThreads;
+      lowest = schedFour;
+    }
+    if (min == -1) {min = fourThreads; lowest = schedFour;}
+  }
+ 
+  switchThread(lowest);
+      
+    
    }
 
 #if TESTING_ALWAYS_MIGRATE
