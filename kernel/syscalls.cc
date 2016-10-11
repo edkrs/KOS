@@ -14,6 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ******************************************************************************/
+#include <iostream>
 #include "runtime/Scheduler.h"
 #include "runtime/Thread.h"
 #include "kernel/Clock.h"
@@ -22,8 +23,6 @@
 #include "world/Access.h"
 #include "machine/Processor.h"
 #include "machine/Machine.h"
-
-
 #include "syscalls.h"
 #include "pthread.h"
 
@@ -119,16 +118,20 @@ extern "C" off_t lseek(int fildes, off_t offset, int whence) {
 
 extern "C" int sched_setaffinity(pid_t pid, size_t cpusetsize, cpu_set_t *mask)
 {
-  //cpu_set_t processors = Machine::getProcessorCount();
+  // cout << *mask << endl;
+  long unsigned int maskInt = (long unsigned int) mask;
   
+  // cpu_set_t *maskNumber = mask;
   if (pid != 0){
     return -1;
   }
-  // if (*mask > processors){
-  // return -1;
-  // }
- 
-  // cpu_set_t currentThread  = LocalProcessor::getCurrThread()->getAffinityMask();
+  // cout << "Before" << endl;
+  if (maskInt>15){
+   return -1;
+   }
+  // cout <<"After" << endl;
+  LocalProcessor::getCurrThread()->setAffinityMask(maskInt);
+  LocalProcessor::getScheduler()->yield();
   
  return 1;
 }

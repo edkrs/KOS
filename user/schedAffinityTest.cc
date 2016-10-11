@@ -51,7 +51,7 @@ int main() {
    /* sched_setaffinity */
    cout << endl << "SCHED_SETAFFINITY TEST 1" << endl;
    cpu_set_t affinityMask = MASK6;
-   //cout << "Setting Mask to "<< affinityMask << " for pid 0 "<< endl; 
+   cout << "Setting Mask to "<< affinityMask << " for pid 0 "<< &affinityMask<< endl; 
    err = sched_setaffinity( 0, sizeof(cpu_set_t), &affinityMask );
    if( err == -1 ){
       cout << "sched_setaffinity unsuccessful" << endl; 
