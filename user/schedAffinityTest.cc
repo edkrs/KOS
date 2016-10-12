@@ -26,7 +26,8 @@ void* dummy (void *args) {
 
 void whereAmI(){
    /* test on which core the process is running */  
-   int count = REPETITION; 
+   int count = REPETITION;
+   cout << "NOW ON WHEREAMI" << endl;
    while (count--){
 	   for( int i=0; i<100000000; i++) asm("");
          cout << "I am running on core "<< getcid() << endl; 
@@ -88,19 +89,20 @@ int main() {
    cout << endl << "SCHED_SETAFFINITY TEST 4" << endl;
    err = 5;
    affinityMask = MASK5;
-   //cout << "Setting Mask to "<< affinityMask << " for pid 0 " << endl; 
+   cout << "Setting Mask to "<< affinityMask << " for pid 0 " << endl; 
    err = sched_setaffinity( 0, sizeof(cpu_set_t), &affinityMask );
+   cout<< "reached" << endl;
    if( err == -1 ){
       cout << "sched_setaffinity unsuccessful" << endl; 
    }else{
-      //cout << "sched_setaffinity successful" << endl; 
+      cout << "sched_setaffinity successful" << endl; 
    	whereAmI();
 	}
    pthread_t t1;
    pthread_create(&t1, nullptr, dummy, nullptr);
-   whereAmI();
-   whereAmI();
-   whereAmI();
+   // whereAmI();
+   //whereAmI();
+   //whereAmI();
 
    /* sched_getaffinity */
    cout << endl << "SCHED_GETAFFINITY TEST 1" << endl;

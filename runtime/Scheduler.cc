@@ -134,72 +134,72 @@ void Scheduler::preempt() {               // IRQs disabled, lock count inflated
       * specified target's ready queue
       */
 
-    int oneSet = 1;
-    int twoSet=1;
-    int threeSet=0;
-    int fourSet=0;
+    //bool oneSet = 0 ;
+    //bool twoSet= 1 ;
+    //bool threeSet=1 ;
+    //bool fourSet= 0;
     
-    Scheduler *lowest;
+    //Scheduler *lowest;
     int min = -1;
-    // int oneSet = ((1 << 0) & (int) affinityMask );
-    //int twoSet = ((1 << 1) & (int) affinityMask );
-    // int threeSet = ((1 << 2) & (int) affinityMask );
-    // int fourSet = ((1 << 3) &  (int) affinityMask );
+    bool oneSet = ((1 << 0) & (int) affinityMask );
+     bool twoSet = ((1 << 1) & (int) affinityMask );
+     bool threeSet = ((1 << 2) & (int) affinityMask );
+     bool fourSet = ((1 << 3) &  (int) affinityMask );
 
-    if (oneSet ==1){
+    if (oneSet==1){
       Scheduler *schedOne= Machine::getScheduler(0);
       int oneThreads = schedOne->readyCount;
       min = oneThreads;
-      lowest = schedOne;
-      if (min == -1) {min = oneThreads; lowest = schedOne;}
+      target = schedOne;
+      if (min == -1) {min = oneThreads; target = schedOne;}
     }
 
   
-    if (twoSet ==1){
+    if (twoSet==1){
       Scheduler *schedTwo= Machine::getScheduler(1);
       int twoThreads = schedTwo->readyCount;
       if (twoThreads <= min){
 	min = twoThreads;
-	lowest = schedTwo;
+	  target = schedTwo;
       }
-      if (min == -1) {min = twoThreads; lowest = schedTwo;}
+         if (min == -1) {min = twoThreads; target = schedTwo;}
     }
 
   
-   if (threeSet ==1){
+    if (threeSet==1){
      Scheduler *schedThree = Machine::getScheduler(2);
      int threeThreads = schedThree->readyCount;
      if (threeThreads <= min){
        min = threeThreads;
-       lowest = schedThree;
+       target = schedThree;
      }
-     if (min == -1) {min = threeThreads; lowest = schedThree;}
+     if (min == -1) {min = threeThreads; target = schedThree;}
   }
   
 
   
-  if (fourSet ==1){
+  if (fourSet==1){
     Scheduler *schedFour= Machine::getScheduler(3);
     int fourThreads = schedFour->readyCount;
     if (fourThreads < min){
       min = fourThreads;
-      lowest = schedFour;
+      target  = schedFour;
     }
-    if (min == -1) {min = fourThreads; lowest = schedFour;}
+    if (min == -1) {min = fourThreads; target = schedFour;}
   }
  
-  switchThread(lowest);
+  switchThread(target);
       
     
    }
 
-#if TESTING_ALWAYS_MIGRATE
-  if (!target) target = partner;
-#else /* simple load balancing */
+  #if TESTING_ALWAYS_MIGRATE
+   if (!target) target = partner;
+  #else /* simple load balancing */
   if (!target) target = (partner->readyCount + 2 < readyCount) ? partner : this;
-#endif
+  #endif
   switchThread(target);
-#endif
+  #endif
 }
 
 void Scheduler::suspend(BasicLock& lk) {
