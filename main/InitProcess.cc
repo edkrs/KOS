@@ -17,13 +17,47 @@
 #include "kernel/Process.h"
 
 int InitProcess() {
-  Process* p0 = knew<Process>();
-  p0->exec("schedAffinityTest");
+  Process *p0 = knew<Process>();
+  p0->exec("prog1");
+  
+  Process *p1 = knew<Process>();
+  p1->exec("prog1");
+
+  Process *p2 = knew<Process>();
+  p2->exec("prog1");
+  
+  Process *p3 = knew<Process>();
+  p3->exec("prog2");
+
+  Process *p4 = knew<Process>();
+  p4->exec("prog2");
+  
+  Process *p5 = knew<Process>();
+  p5->exec("prog2"); 
+
+  Process *p6 = knew<Process>();
+  p6->exec("prog3");
+
+  Process *p7 = knew<Process>();
+  p7->exec("prog3");
+
+  Process *p8 = knew<Process>();
+  p8->exec("prog3");
+
+  Process *p9 = knew<Process>();
+  p9->exec("schedAffinityTest");
+
+
+
+
+
+
+  
 #if !TESTING_KEYCODE_LOOP
   //Process* p1 = knew<Process>();
   // p1->exec("kbloop");
 #endif
-  //  Process* p2 = knew<Process>();
+  // Process* p2 = knew<Process>();
   // p2->exec("threadtest");
   // Process* p3 = knew<Process>();
   // p3->exec("manythread");
