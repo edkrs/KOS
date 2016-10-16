@@ -141,7 +141,7 @@ void Scheduler::preempt() {               // IRQs disabled, lock count inflated
     
     //Scheduler *lowest;
     int min = -1;
-    bool oneSet = ((1 << 0) & (int) affinityMask );
+     bool oneSet = ((1 << 0) & (int) affinityMask );
      bool twoSet = ((1 << 1) & (int) affinityMask );
      bool threeSet = ((1 << 2) & (int) affinityMask );
      bool fourSet = ((1 << 3) &  (int) affinityMask );
@@ -149,31 +149,21 @@ void Scheduler::preempt() {               // IRQs disabled, lock count inflated
     if (oneSet==1){
       Scheduler *schedOne= Machine::getScheduler(0);
       int oneThreads = schedOne->readyCount;
-      min = oneThreads;
-      target = schedOne;
-      if (min == -1) {min = oneThreads; target = schedOne;}
+      if (min == -1 || oneThreads <min) {min = oneThreads; target = schedOne;}
     }
 
   
     if (twoSet==1){
       Scheduler *schedTwo= Machine::getScheduler(1);
       int twoThreads = schedTwo->readyCount;
-      if (twoThreads <= min){
-	min = twoThreads;
-	  target = schedTwo;
-      }
-         if (min == -1) {min = twoThreads; target = schedTwo;}
+      if (min == -1 || twoThreads <min) {min = twoThreads; target = schedTwo;}
     }
 
   
     if (threeSet==1){
      Scheduler *schedThree = Machine::getScheduler(2);
      int threeThreads = schedThree->readyCount;
-     if (threeThreads <= min){
-       min = threeThreads;
-       target = schedThree;
-     }
-     if (min == -1) {min = threeThreads; target = schedThree;}
+     if (min == -1 || threeThreads < min) {min = threeThreads; target = schedThree;}
   }
   
 
@@ -181,15 +171,8 @@ void Scheduler::preempt() {               // IRQs disabled, lock count inflated
   if (fourSet==1){
     Scheduler *schedFour= Machine::getScheduler(3);
     int fourThreads = schedFour->readyCount;
-    if (fourThreads < min){
-      min = fourThreads;
-      target  = schedFour;
-    }
-    if (min == -1) {min = fourThreads; target = schedFour;}
+    if (min == -1 || fourThreads < min) {min = fourThreads; target = schedFour;}
   }
- 
-  switchThread(target);
-      
     
    }
 
