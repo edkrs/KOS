@@ -5,7 +5,7 @@
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-
+0;136;0c
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -141,9 +141,15 @@ extern "C" int sched_setaffinity(pid_t pid, size_t cpusetsize, cpu_set_t *mask)
 
 extern "C" int sched_getaffinity(pid_t pid, size_t cpusetsize, cpu_set_t *mask)
 {
+  if (pid != 0){
+    return -1;
+  }
 
+  //long unsigned int maskInt;
+  mask[0] = Runtime::getCurrThread()->getAffinityMask();
+  //mask = maskInt;
   
- return 1;
+ return 0;
 }
 
 /* I have added a system call here - Priyaa */
